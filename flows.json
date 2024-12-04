@@ -1,0 +1,235 @@
+[
+    {
+        "id": "b0061bb62c53e812",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "93931a43458aa46c",
+        "type": "group",
+        "z": "b0061bb62c53e812",
+        "name": "",
+        "style": {
+            "fill": "#3f93cf",
+            "label": true
+        },
+        "nodes": [
+            "9201d123e0d51c5c",
+            "f5a50fb3bb8f3a9e",
+            "17a7ad60291117d2",
+            "df7c5c098d798773",
+            "d6e78893d1ea1d32",
+            "741c1a64fc047ffe",
+            "487b6f2090ef86d0"
+        ],
+        "x": 594,
+        "y": 239,
+        "w": 592,
+        "h": 262
+    },
+    {
+        "id": "9201d123e0d51c5c",
+        "type": "mqtt in",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "name": "",
+        "topic": "stm/grupo/sensores",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3a68a436fdde3446",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 710,
+        "y": 340,
+        "wires": [
+            [
+                "f5a50fb3bb8f3a9e",
+                "d6e78893d1ea1d32",
+                "487b6f2090ef86d0"
+            ]
+        ]
+    },
+    {
+        "id": "f5a50fb3bb8f3a9e",
+        "type": "function",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "name": "function 3",
+        "func": "// Extract values from msg.payload\nvar CO2 = msg.payload.CO2;\nvar Temperatura= msg.payload.Temperatura;\nvar Humedad = msg.payload.Humedad;\n\n// Debugging: Log the extracted values\nnode.warn(\"CO2: \" + CO2);\nnode.warn(\"Temperatura: \" + Temperatura);\nnode.warn(\"Humedad: \" + Humedad);\n\n// Prepare msg.payload to be used for SQL parameters\nmsg.payload = [CO2, Temperatura, Humedad];\n\n// Optionally, set msg.topic for the SQL query\nmsg.topic = \"INSERT INTO DatosSensores (SensorCO2, SensorTMP, SensorHMD) VALUES (?, ?, ?)\";\n\n// Return the message with the topic and payload\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 340,
+        "wires": [
+            [
+                "17a7ad60291117d2",
+                "df7c5c098d798773"
+            ]
+        ]
+    },
+    {
+        "id": "17a7ad60291117d2",
+        "type": "mysql",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "mydb": "7e3b1a43e5af6e71",
+        "name": "",
+        "x": 1070,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "df7c5c098d798773",
+        "type": "debug",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "d6e78893d1ea1d32",
+        "type": "debug",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "741c1a64fc047ffe",
+        "type": "ui_text",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "group": "8ebd17d427480969",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1050,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "487b6f2090ef86d0",
+        "type": "ui_text_input",
+        "z": "b0061bb62c53e812",
+        "g": "93931a43458aa46c",
+        "name": "",
+        "label": "",
+        "tooltip": "",
+        "group": "8ebd17d427480969",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 880,
+        "y": 460,
+        "wires": [
+            [
+                "741c1a64fc047ffe"
+            ]
+        ]
+    },
+    {
+        "id": "3a68a436fdde3446",
+        "type": "mqtt-broker",
+        "name": "emqx",
+        "broker": "broker.emqx.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "7e3b1a43e5af6e71",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "10.244.148.212",
+        "port": "3306",
+        "db": "MQTT-IOT",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "8ebd17d427480969",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "3e1bbac4d44404db",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3e1bbac4d44404db",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
